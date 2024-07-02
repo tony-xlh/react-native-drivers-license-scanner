@@ -1,5 +1,12 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, Button, View, Text, BackHandler} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Button,
+  View,
+  Text,
+  BackHandler,
+} from 'react-native';
 import * as DBR from 'vision-camera-dynamsoft-barcode-reader';
 import * as DDN from 'vision-camera-dynamsoft-document-normalizer';
 import DLScanner from './components/DLScanner';
@@ -32,6 +39,7 @@ function App(): React.JSX.Element {
       console.log(DBRLicenseResult);
       console.log(DDNLicenseResult);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <SafeAreaView style={styles.container}>
