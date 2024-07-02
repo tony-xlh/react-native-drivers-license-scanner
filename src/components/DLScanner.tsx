@@ -11,12 +11,12 @@ import {
 } from 'react-native-vision-camera';
 import * as DDN from 'vision-camera-dynamsoft-document-normalizer';
 import {Svg, Polygon} from 'react-native-svg';
-import {DetectedQuadResult} from 'vision-camera-dynamsoft-document-normalizer';
+import {DetectedQuadResult, Point} from 'vision-camera-dynamsoft-document-normalizer';
 import {Worklets, useSharedValue} from 'react-native-worklets-core';
 import {getRectFromPoints, intersectionOverUnion, sleep} from '../Utils';
 
 export interface ScannerProps{
-  onScanned?: (path:PhotoFile|null) => void;
+  onScanned?: (photo:PhotoFile|null,points:Point[]|null) => void;
 }
 
 function DLScanner(props:ScannerProps): React.JSX.Element {
@@ -166,13 +166,26 @@ function DLScanner(props:ScannerProps): React.JSX.Element {
         setIsActive(false);
         if (props.onScanned) {
           props.onScanned(
-            photo
+            photo,
+            scaledPoints(previousResults.current[0],photo.width,photo.height)
           );
         }
       }else{
         Alert.alert('','Failed to take a photo');
       }
     }
+  };
+
+  const scaledPoints = (quad:DetectedQuadResult,photoWidth:number,photoHeight:number) => {
+    let points = JSON.parse(JSON.stringify(quad.location.points));
+    for (let index = 0; index < points.length; index++) {
+      const point = points[index];
+      point.x = Math.ceil(point.x / (getFrameSize()[0].value / photoWidth));
+      point.y = Math.ceil(point.y / (getFrameSize()[1].value / photoHeight));
+      point.x = Math.min(photoWidth,point.x);
+      point.y = Math.min(photoHeight,point.y);
+    }
+    return points;
   };
 
   const frameProcessor = useFrameProcessor((frame) => {

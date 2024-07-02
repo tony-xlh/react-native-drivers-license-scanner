@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -6,14 +6,18 @@ import {
   View,
   Text,
   BackHandler,
+  Image,
 } from 'react-native';
 import * as DBR from 'vision-camera-dynamsoft-barcode-reader';
 import * as DDN from 'vision-camera-dynamsoft-document-normalizer';
 import DLScanner from './components/DLScanner';
 import { PhotoFile } from 'react-native-vision-camera';
+import { DetectedQuadResult } from 'vision-camera-dynamsoft-document-normalizer';
 
 function App(): React.JSX.Element {
-  const [isScanning, setIsScanning] = React.useState(false);
+  const [photoBase64, setPhotoBase64] = useState<string|undefined>();
+  const [isScanning, setIsScanning] = useState(false);
+  const [barcodeText, setBarcodeText] = useState("");
   React.useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', function () {
       if (!isScanning) {
@@ -42,10 +46,40 @@ function App(): React.JSX.Element {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const onScanned = (photo:PhotoFile|null) => {
+  const onScanned = async (photo:PhotoFile|null,points?:DDN.Point[]|null) => {
     setIsScanning(false);
+    console.log('onScanned');
     console.log(photo);
-  }
+    if (photo) {
+      if (!points) {
+        const detectedQuads = await DDN.detectFile(photo.path);
+        console.log(detectedQuads);
+        if (detectedQuads.length > 0) {
+          points = detectedQuads[0].location.points;
+        }
+      }
+      console.log(points);
+      if (points) {
+        let detectionResult:DetectedQuadResult = {
+          confidenceAsDocumentBoundary:90,
+          area:0,
+          location:{
+            points:[points[0]!,points[1]!,points[2]!,points[3]!],
+          },
+        };
+        const result = await DDN.normalizeFile(photo.path,detectionResult.location,{saveNormalizationResultAsFile:true,includeNormalizationResultAsBase64:true});
+        console.log(result);
+        if (result.imageBase64) {
+          setPhotoBase64(result.imageBase64);
+          let barcodeResults = await DBR.decodeBase64(result.imageBase64);
+          console.log(barcodeResults);
+          if (barcodeResults.length > 0) {
+            setBarcodeText(barcodeResults[0].barcodeText);
+          }
+        }
+      }
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       {!isScanning && (
@@ -54,9 +88,25 @@ function App(): React.JSX.Element {
             Dynamsoft Driver's License Scanner Demo
           </Text>
           <Button title="Start Scanning" onPress={() => setIsScanning(true)} />
+          {photoBase64 && (
+            <>
+              <Text style={styles.scannedLbl}>
+                Scanned:
+              </Text>
+              <Text>
+                {barcodeText}
+              </Text>
+              <Image
+                style={styles.image}
+                source={{
+                  uri: 'data:image/jpeg;base64,' + photoBase64,
+                }}
+              />
+            </>
+          )}
         </View>
       )}
-      {isScanning && <DLScanner onScanned={(photo)=> onScanned(photo)} />}
+      {isScanning && <DLScanner onScanned={(photo,points)=> onScanned(photo,points)} />}
     </SafeAreaView>
   );
 }
@@ -71,6 +121,15 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     marginVertical: 8,
+  },
+  scannedLbl:{
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  image: {
+    width: '100%',
+    height: 320,
+    resizeMode: 'contain',
   },
 });
 
