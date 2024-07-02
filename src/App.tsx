@@ -10,6 +10,7 @@ import {
 import * as DBR from 'vision-camera-dynamsoft-barcode-reader';
 import * as DDN from 'vision-camera-dynamsoft-document-normalizer';
 import DLScanner from './components/DLScanner';
+import { PhotoFile } from 'react-native-vision-camera';
 
 function App(): React.JSX.Element {
   const [isScanning, setIsScanning] = React.useState(false);
@@ -41,6 +42,10 @@ function App(): React.JSX.Element {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const onScanned = (photo:PhotoFile|null) => {
+    setIsScanning(false);
+    console.log(photo);
+  }
   return (
     <SafeAreaView style={styles.container}>
       {!isScanning && (
@@ -51,7 +56,7 @@ function App(): React.JSX.Element {
           <Button title="Start Scanning" onPress={() => setIsScanning(true)} />
         </View>
       )}
-      {isScanning && <DLScanner />}
+      {isScanning && <DLScanner onScanned={(photo)=> onScanned(photo)} />}
     </SafeAreaView>
   );
 }
