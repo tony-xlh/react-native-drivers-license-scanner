@@ -11,7 +11,10 @@
   },
   "dependencies": {
     "react": "18.2.0",
-    "react-native": "0.74.3"
+    "react-native": "0.74.3",
+    "react-native-vision-camera": "^4.3.2",
+    "vision-camera-dynamsoft-barcode-reader": "^2.0.0",
+    "vision-camera-dynamsoft-document-normalizer": "^3.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
