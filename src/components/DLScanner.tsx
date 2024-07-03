@@ -55,21 +55,16 @@ function DLScanner(props:ScannerProps): React.JSX.Element {
   };
   const getFrameSize = () => {
     let width, height;
-    if (Platform.OS === 'android') {
-      if (
-        frameWidth > frameHeight &&
-        Dimensions.get('window').width > Dimensions.get('window').height
-      ) {
-        width = frameWidth;
-        height = frameHeight;
-      } else {
-        console.log('Has rotation');
-        width = frameHeight;
-        height = frameWidth;
-      }
-    } else {
+    if (
+      frameWidth > frameHeight &&
+      Dimensions.get('window').width > Dimensions.get('window').height
+    ) {
       width = frameWidth;
       height = frameHeight;
+    } else {
+      console.log('Has rotation');
+      width = frameHeight;
+      height = frameWidth;
     }
     return [width, height];
   };

@@ -1,7 +1,7 @@
 PODS:
   - boost (1.83.0)
   - DoubleConversion (1.1.6)
-  - DynamsoftBarcodeReader (9.6.20)
+  - DynamsoftBarcodeReader (9.6.40)
   - DynamsoftCaptureVisionRouter (2.2.12)
   - DynamsoftCore (3.2.11)
   - DynamsoftDocumentNormalizer (2.2.11)
@@ -1177,28 +1177,66 @@ PODS:
   - RNSVG (15.3.0):
     - React-Core
   - SocketRocket (0.7.0)
-  - VisionCamera (4.3.2):
-    - VisionCamera/Core (= 4.3.2)
-    - VisionCamera/FrameProcessors (= 4.3.2)
-    - VisionCamera/React (= 4.3.2)
-  - VisionCamera/Core (4.3.2)
-  - VisionCamera/FrameProcessors (4.3.2):
+  - VisionCamera (4.0.3):
+    - VisionCamera/Core (= 4.0.3)
+    - VisionCamera/FrameProcessors (= 4.0.3)
+    - VisionCamera/React (= 4.0.3)
+  - VisionCamera/Core (4.0.3)
+  - VisionCamera/FrameProcessors (4.0.3):
     - React
     - React-callinvoker
     - react-native-worklets-core
-  - VisionCamera/React (4.3.2):
+  - VisionCamera/React (4.0.3):
     - React-Core
     - VisionCamera/FrameProcessors
-  - VisionCameraDynamsoftBarcodeReader (2.0.0):
-    - DynamsoftBarcodeReader (= 9.6.20)
+  - VisionCameraDynamsoftBarcodeReader (2.1.1):
+    - DoubleConversion
+    - DynamsoftBarcodeReader (= 9.6.40)
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
     - React-Core
-  - VisionCameraDynamsoftDocumentNormalizer (3.1.0):
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - VisionCameraDynamsoftDocumentNormalizer (3.2.0):
+    - DoubleConversion
     - DynamsoftCaptureVisionRouter (= 2.2.12)
     - DynamsoftCore (= 3.2.11)
     - DynamsoftDocumentNormalizer (= 2.2.11)
     - DynamsoftImageProcessing (= 2.2.11)
     - DynamsoftLicense (= 3.2.11)
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
     - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -1398,7 +1436,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   DoubleConversion: 76ab83afb40bddeeee456813d9c04f67f78771b5
-  DynamsoftBarcodeReader: 666141039518d161d31a0e5e78286f7855a51264
+  DynamsoftBarcodeReader: 42d9ff4c9e1314ab1c600877e7f8c37ac2525bd8
   DynamsoftCaptureVisionRouter: e0556107089dd4708db7c79a391798159d62a501
   DynamsoftCore: 318bae4cfef9d63624752e8efdd138c034fab05c
   DynamsoftDocumentNormalizer: 8232f301db5b9b8c9390f20b5d715de5bbb84c0a
@@ -1458,9 +1496,9 @@ SPEC CHECKSUMS:
   ReactCommon: f00e436b3925a7ae44dfa294b43ef360fbd8ccc4
   RNSVG: a48668fd382115bc89761ce291a81c4ca5f2fd2e
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
-  VisionCamera: 9f7b70431c8662ff933e1ed66d074bdba3a63f7d
-  VisionCameraDynamsoftBarcodeReader: 5e7cdb02740204db250535d174ddb3976d96b0df
-  VisionCameraDynamsoftDocumentNormalizer: 26a7aebcaab13758b110c343f2bf52f3b660a89f
+  VisionCamera: b633f90960feab2669b7a1c51f8a201dd0a5bfc3
+  VisionCameraDynamsoftBarcodeReader: 28c7866146842f9e4b76201012033500de7890db
+  VisionCameraDynamsoftDocumentNormalizer: 9406da3dfae0d0b6bfa753d4594e4457d572d0b5
   Yoga: 04f1db30bb810187397fa4c37dd1868a27af229c
 
 PODFILE CHECKSUM: 76f3ac31c77b74432fa62a47fa211e0d305073cd
