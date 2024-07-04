@@ -5,6 +5,7 @@ import {
   Camera,
   PhotoFile,
   runAsync,
+  runAtTargetFps,
   useCameraDevice,
   useCameraFormat,
   useFrameProcessor,
@@ -46,26 +47,32 @@ function DLScanner(props:ScannerProps): React.JSX.Element {
     let results: DetectedQuadResult[] = [];
     for (let index = 0; index < Object.keys(records).length; index++) {
       const result = records[Object.keys(records)[index]];
-      const rect = getRectFromPoints(result.location.points);
-      if (rect.width / getFrameSize()[0].value < 0.95) {
-        //avoid full screen misdetection
-        results.push(result);
-      }
+      results.push(result);
     }
     setDetectionResults(results);
   };
   const getFrameSize = () => {
     let width, height;
-    if (
-      frameWidth > frameHeight &&
-      Dimensions.get('window').width > Dimensions.get('window').height
-    ) {
-      width = frameWidth;
-      height = frameHeight;
-    } else {
-      console.log('Has rotation');
-      width = frameHeight;
-      height = frameWidth;
+    width = frameWidth.value;
+    height = frameHeight.value;
+    if (frameWidth.value>frameHeight.value){
+      if (Dimensions.get('window').width>Dimensions.get('window').height) {
+        width = frameWidth.value;
+        height = frameHeight.value;
+      }else{
+        console.log("Has rotation");
+        width = frameHeight.value;
+        height = frameWidth.value;
+      }
+    }else if (frameWidth.value<frameHeight.value) {
+      if (Dimensions.get('window').width<Dimensions.get('window').height) {
+        width = frameWidth.value;
+        height = frameHeight.value;
+      }else{
+        console.log("Has rotation");
+        width = frameHeight.value;
+        height = frameWidth.value;
+      }
     }
     return [width, height];
   };
@@ -174,8 +181,8 @@ function DLScanner(props:ScannerProps): React.JSX.Element {
   };
 
   const scaledPoints = (quad:DetectedQuadResult,photoWidth:number,photoHeight:number) => {
-    let frameW = getFrameSize()[0].value;
-    let frameH = getFrameSize()[1].value;
+    let frameW = getFrameSize()[0];
+    let frameH = getFrameSize()[1];
     if (frameW<frameH && photoWidth>photoHeight) {
       let temp = photoWidth;
       photoWidth = photoHeight;
@@ -201,14 +208,16 @@ function DLScanner(props:ScannerProps): React.JSX.Element {
 
   const frameProcessor = useFrameProcessor((frame) => {
     'worklet';
-    
     if (takenShared.value == false) {
-      console.log('detect frame');
-      runAsync(frame, () => {
+      runAtTargetFps(3, () => {
         'worklet';
         try {
           const results = DDN.detect(frame);
           console.log(results);
+          if (Object.keys(results).length>0) {
+            frameWidth.value = frame.width;
+            frameHeight.value = frame.height;
+          }
           convertAndSetResultsJS(results);
         } catch (error) {
           console.log(error);
@@ -230,9 +239,11 @@ function DLScanner(props:ScannerProps): React.JSX.Element {
             photo={true}
             frameProcessor={frameProcessor}
             pixelFormat="yuv"
+            resizeMode='contain'
           />
           <Svg
             style={StyleSheet.absoluteFill}
+            preserveAspectRatio='xMidYMid slice'
             viewBox={viewBox}>
             {pointsText !== 'default' && (
               <Polygon
