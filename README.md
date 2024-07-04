@@ -1,4 +1,11 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+This is a React Native demo for scanning driver's licenses.
+
+It uses [Dynamsoft Document Normalizer](https://www.dynamsoft.com/document-normalizer/docs/core/introduction/) to detect document boundaries and crop documents and uses [Dynamsoft Barcode Reader](https://www.dynamsoft.com/barcode-reader/overview/) to read the PDF417 barcodes on driver's licenses.
+
+It uses React Native Vision Camera and the frame processor plugins for taking photos and live detection.
+
+![IMG_0380](https://github.com/tony-xlh/react-native-drivers-license-scanner/assets/5462205/901cccb7-4fb9-4ffc-a51f-a2dfeed1fb7a)
+
 
 # Getting Started
 
