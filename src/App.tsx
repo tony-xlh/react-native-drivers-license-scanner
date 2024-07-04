@@ -7,6 +7,7 @@ import {
   Text,
   BackHandler,
   Image,
+  Alert,
 } from 'react-native';
 import * as DBR from 'vision-camera-dynamsoft-barcode-reader';
 import * as DDN from 'vision-camera-dynamsoft-document-normalizer';
@@ -36,13 +37,19 @@ function App(): React.JSX.Element {
     });
     (async () => {
       const DBRLicenseResult = await DBR.initLicense(
-        'DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==',
+        'DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAwMjI3NzYzLVRYbE5iMkpwYkdWUWNtOXFYMlJpY2ciLCJtYWluU2VydmVyVVJMIjoiaHR0cHM6Ly9tbHRzLmR5bmFtc29mdC5jb20iLCJvcmdhbml6YXRpb25JRCI6IjEwMDIyNzc2MyIsInN0YW5kYnlTZXJ2ZXJVUkwiOiJodHRwczovL3NsdHMuZHluYW1zb2Z0LmNvbSIsImNoZWNrQ29kZSI6MTQzODIxODMzfQ==',
       );
       const DDNLicenseResult = await DDN.initLicense(
         'DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAwMjI3NzYzLVRYbE5iMkpwYkdWUWNtOXEiLCJtYWluU2VydmVyVVJMIjoiaHR0cHM6Ly9tbHRzLmR5bmFtc29mdC5jb20iLCJvcmdhbml6YXRpb25JRCI6IjEwMDIyNzc2MyIsInN0YW5kYnlTZXJ2ZXJVUkwiOiJodHRwczovL3NsdHMuZHluYW1zb2Z0LmNvbSIsImNoZWNrQ29kZSI6LTM5MDUxMjkwOH0=',
       );
       console.log(DBRLicenseResult);
       console.log(DDNLicenseResult);
+      if (DBRLicenseResult == false) {
+        Alert.alert("","Dynamsoft Barcode Reader's License Invalid");
+      }
+      if (DDNLicenseResult == false) {
+        Alert.alert("","Dynamsoft Document Normalizer's License Invalid");
+      }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -88,7 +95,7 @@ function App(): React.JSX.Element {
               <Text style={styles.scannedLbl}>
                 Scanned:
               </Text>
-              <Text>
+              <Text ellipsizeMode='tail' style={{maxHeight:150}} >
                 {barcodeText}
               </Text>
               <Image
