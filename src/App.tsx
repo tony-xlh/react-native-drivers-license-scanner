@@ -63,7 +63,7 @@ function App(): React.JSX.Element {
             points:[points[0]!,points[1]!,points[2]!,points[3]!],
           },
         };
-        const result = await DDN.normalizeFile(photo.path,detectionResult.location,{includeNormalizationResultAsBase64:true});
+        const result = await DDN.normalizeFile(photo.path,detectionResult.location,{includeNormalizationResultAsBase64:true},'NormalizeDocument_Color');
         if (result.imageBase64) {
           setPhotoBase64(result.imageBase64);
           let barcodeResults = await DBR.decodeBase64(result.imageBase64);
