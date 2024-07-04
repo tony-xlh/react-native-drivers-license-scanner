@@ -39,7 +39,7 @@ function App(): React.JSX.Element {
         'DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==',
       );
       const DDNLicenseResult = await DDN.initLicense(
-        'DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==',
+        'DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAwMjI3NzYzLVRYbE5iMkpwYkdWUWNtOXEiLCJtYWluU2VydmVyVVJMIjoiaHR0cHM6Ly9tbHRzLmR5bmFtc29mdC5jb20iLCJvcmdhbml6YXRpb25JRCI6IjEwMDIyNzc2MyIsInN0YW5kYnlTZXJ2ZXJVUkwiOiJodHRwczovL3NsdHMuZHluYW1zb2Z0LmNvbSIsImNoZWNrQ29kZSI6LTM5MDUxMjkwOH0=',
       );
       console.log(DBRLicenseResult);
       console.log(DDNLicenseResult);
@@ -51,14 +51,10 @@ function App(): React.JSX.Element {
     console.log('onScanned');
     console.log(photo);
     if (photo) {
-      if (!points) {
-        const detectedQuads = await DDN.detectFile(photo.path);
-        console.log(detectedQuads);
-        if (detectedQuads.length > 0) {
-          points = detectedQuads[0].location.points;
-        }
+      const detectedQuads = await DDN.detectFile(photo.path);
+      if (detectedQuads.length > 0) {
+        points = detectedQuads[0].location.points;
       }
-      console.log(points);
       if (points) {
         let detectionResult:DetectedQuadResult = {
           confidenceAsDocumentBoundary:90,
@@ -67,8 +63,7 @@ function App(): React.JSX.Element {
             points:[points[0]!,points[1]!,points[2]!,points[3]!],
           },
         };
-        const result = await DDN.normalizeFile(photo.path,detectionResult.location,{saveNormalizationResultAsFile:true,includeNormalizationResultAsBase64:true});
-        console.log(result);
+        const result = await DDN.normalizeFile(photo.path,detectionResult.location,{includeNormalizationResultAsBase64:true});
         if (result.imageBase64) {
           setPhotoBase64(result.imageBase64);
           let barcodeResults = await DBR.decodeBase64(result.imageBase64);

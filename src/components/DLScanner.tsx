@@ -20,6 +20,7 @@ export interface ScannerProps{
 }
 
 function DLScanner(props:ScannerProps): React.JSX.Element {
+  const takenShared = useSharedValue(false);
   const camera = useRef<Camera|null>(null);
   const [hasPermission, setHasPermission] = useState(false);
   const [isActive, setIsActive] = useState(false);
@@ -155,6 +156,7 @@ function DLScanner(props:ScannerProps): React.JSX.Element {
     if (camera.current && photoTaken.current === false) {
       console.log('take photo');
       photoTaken.current = true;
+      takenShared.value = true;
       await sleep(100);
       const photo = await camera.current.takePhoto();
       if (photo) {
@@ -172,30 +174,48 @@ function DLScanner(props:ScannerProps): React.JSX.Element {
   };
 
   const scaledPoints = (quad:DetectedQuadResult,photoWidth:number,photoHeight:number) => {
+    let frameW = getFrameSize()[0].value;
+    let frameH = getFrameSize()[1].value;
+    if (frameW<frameH && photoWidth>photoHeight) {
+      let temp = photoWidth;
+      photoWidth = photoHeight;
+      photoHeight = temp;
+    }
+    console.log(photoWidth);
+    console.log(photoHeight);
     let points = JSON.parse(JSON.stringify(quad.location.points));
-    for (let index = 0; index < points.length; index++) {
-      const point = points[index];
-      point.x = Math.ceil(point.x / (getFrameSize()[0].value / photoWidth));
-      point.y = Math.ceil(point.y / (getFrameSize()[1].value / photoHeight));
-      point.x = Math.min(photoWidth,point.x);
-      point.y = Math.min(photoHeight,point.y);
+    if (frameW/frameH == photoWidth/photoHeight) {
+      console.log("scale");
+      for (let index = 0; index < points.length; index++) {
+        const point = points[index];
+        point.x = Math.ceil(point.x / (frameW / photoWidth));
+        point.y = Math.ceil(point.y / (frameH / photoHeight));
+        point.x = Math.min(photoWidth,point.x);
+        point.y = Math.min(photoHeight,point.y);
+      }
+    }else{
+      return null;
     }
     return points;
   };
 
   const frameProcessor = useFrameProcessor((frame) => {
     'worklet';
-    console.log('detect frame');
-    runAsync(frame, () => {
-      'worklet';
-      try {
-        const results = DDN.detect(frame);
-        console.log(results);
-        convertAndSetResultsJS(results);
-      } catch (error) {
-        console.log(error);
-      }
-    });
+    
+    if (takenShared.value == false) {
+      console.log('detect frame');
+      runAsync(frame, () => {
+        'worklet';
+        try {
+          const results = DDN.detect(frame);
+          console.log(results);
+          convertAndSetResultsJS(results);
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    }
+    
   }, []);
   return (
     <>
